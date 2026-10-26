@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Café & Letras: café, literatura y una pausa para disfrutar.">
+  <meta name="theme-color" content="#f4eee4">
+  <title>Café &amp; Letras — Una pausa literaria</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="encabezado">
+    <a class="marca" href="#citas" aria-label="Café & Letras, inicio">
+      <span class="marca-icono" aria-hidden="true">☕</span>
+      <span>
+        <span class="titulo-marca">CAFÉ <span>&amp;</span> LETRAS</span>
+        <span class="eslogan">Donde el aroma del café se combina con la magia de la lectura</span>
+      </span>
+    </a>
+    <div class="acciones-encabezado">
+      <span id="indicador-mesa-encabezado" class="indicador-mesa indicador-mesa-actual" aria-live="polite">Mesa 4 (Tú)</span>
+      <button id="btn-ver-pedido" class="boton boton-secundario" type="button">Ver pedido actual</button>
+      <button id="btn-compartir" class="boton boton-secundario" type="button">Compartir</button>
+      <button id="btn-abrir-mesero" class="boton boton-principal" type="button">Llamar Mesero</button>
+    </div>
+  </header>
+
+  <nav class="navegacion-pestanas" aria-label="Secciones principales" role="tablist">
+    <button id="pestana-citas" class="pestana activa" type="button" role="tab" aria-selected="true" aria-controls="citas" data-panel="citas">Citas &amp; Lectura</button>
+    <button id="pestana-menu" class="pestana" type="button" role="tab" aria-selected="false" aria-controls="panel-menu" data-panel="panel-menu">
+      Menú del Día <span class="etiqueta-hoy">ESPECIAL HOY</span>
+    </button>
+    <button id="pestana-salon" class="pestana" type="button" role="tab" aria-selected="false" aria-controls="salon" data-panel="salon">Mesas &amp; Salón</button>
+    <button id="pestana-biblioteca" class="pestana" type="button" role="tab" aria-selected="false" aria-controls="biblioteca" data-panel="biblioteca">Biblioteca</button>
+  </nav>
+
+  <dialog id="dialogo-frases-guardadas" class="dialogo">
+    <div class="dialogo-cabecera">
+      <h2>Frases guardadas</h2>
+      <button class="boton-cerrar-dialogo" type="button" aria-label="Cerrar frases guardadas">×</button>
+    </div>
+    <p id="estado-frases-guardadas" class="estado-interaccion" aria-live="polite"></p>
+    <ul id="lista-frases-guardadas" class="lista-frases-guardadas"></ul>
+  </dialog>
+
+  <dialog id="dialogo-compartir" class="dialogo">
+    <div class="dialogo-cabecera">
+      <h2>Compartir Café &amp; Letras</h2>
+      <button class="boton-cerrar-dialogo" type="button" aria-label="Cerrar opciones para compartir">×</button>
+    </div>
+    <p>Tu navegador no pudo abrir las opciones para compartir. Podés copiar este enlace:</p>
+    <label class="campo-enlace-compartir">
+      Enlace de la página
+      <input id="enlace-compartir" type="url" readonly>
+    </label>
+    <button id="btn-copiar-enlace" class="boton boton-principal" type="button">Copiar enlace</button>
+    <p id="estado-compartir" class="estado-interaccion" role="status" aria-live="polite"></p>
+  </dialog>
+
+  <dialog id="dialogo-confirmar-pedido" class="dialogo">
+    <div class="dialogo-cabecera">
+      <h2>Revisá tu pedido</h2>
+      <button class="boton-cerrar-dialogo" type="button" aria-label="Cerrar revisión del pedido">×</button>
+    </div>
+    <p>Confirmá el pedido de demostración para tu mesa.</p>
+    <ul id="resumen-para-cocina" class="resumen-para-cocina"></ul>
+    <p class="total-confirmacion">Total: <strong id="total-para-cocina">$0</strong></p>
+    <p class="aviso-demostracion">Esto es una demostración local. No se envía ningún pedido a una cocina real.</p>
+    <div class="acciones-dialogo">
+      <button id="btn-cancelar-pedido" class="boton boton-secundario" type="button">Volver al pedido</button>
+      <button id="btn-confirmar-pedido" class="boton boton-principal" type="button">Confirmar pedido de demostración</button>
+    </div>
+  </dialog>
+
+  <dialog id="dialogo-mesero" class="dialogo" aria-labelledby="titulo-mesero">
+    <div class="dialogo-cabecera">
+      <div>
+        <p class="sobretitulo"><span aria-hidden="true"></span> ESTAMOS PARA ACOMPAÑARTE</p>
+        <h2 id="titulo-mesero">Llamar al mesero</h2>
+      </div>
+      <button class="boton-cerrar-dialogo" type="button" aria-label="Cerrar solicitud al mesero">×</button>
+    </div>
+    <p class="descripcion">Contanos qué necesitás desde tu mesa.</p>
+    <form id="formulario-mesero" class="formulario-reserva">
+      <div class="campos-formulario">
+        <label>Tipo de solicitud
+          <select name="solicitud" required>
+            <option value="">Elegí una opción</option>
+            <option value="Pedir la cuenta">Pedir la cuenta</option>
+            <option value="Repetir café">Repetir café</option>
+            <option value="Libro recomendado">Libro recomendado</option>
+            <option value="Atención general">Atención general</option>
+          </select>
+        </label>
+        <label class="campo-nota">Mensaje (opcional)
+          <textarea name="nota" rows="3" placeholder="Podés agregar un detalle"></textarea>
+        </label>
+      </div>
+      <button class="boton boton-principal" type="submit">Registrar solicitud</button>
+      <p id="confirmacion-mesero" class="confirmacion-reserva" role="status" aria-live="polite"></p>
+      <p class="aviso-reserva">Esta es una demostración local y no avisa a un mesero real.</p>
+    </form>
+  </dialog>
+
+  <div id="notificacion" class="notificacion" role="status" aria-live="polite"></div>
+
+  <main>
+    <section id="citas" class="experiencia panel-pestana" role="tabpanel" aria-labelledby="pestana-citas">
+      <div class="introduccion">
+        <p class="sobretitulo"><span aria-hidden="true"></span> RINCÓN DE LECTURA</p>
+        <h2 id="titulo-principal">Palabras para<br><em>quedarse un rato.</em></h2>
+        <p class="descripcion">Una pausa entre páginas, ideas y aromas.</p>
+      </div>
+
+      <section id="tarjeta" class="tarjeta" aria-labelledby="titulo-tarjeta">
+        <div class="tarjeta-cabecera">
+          <span class="sello" aria-hidden="true">C&amp;L</span>
+          <p id="titulo-tarjeta">Una pausa inspiradora</p>
+          <span class="linea-decorativa" aria-hidden="true"></span>
+        </div>
+        <p id="categoria-frase" class="categoria-frase">CLÁSICOS DE LA LITERATURA</p>
+        <blockquote class="cita">
+          <span class="comilla" aria-hidden="true">“</span>
+          <p id="texto-frase">¡Qué descansada vida la del que huye del mundanal ruido!</p>
+          <p id="autor-frase">— Fray Luis de León, «Vida retirada»</p>
+        </blockquote>
+        <div class="acciones acciones-frase">
+          <button id="btn-nueva-frase" class="boton boton-principal" type="button">Nueva Frase Inspiradora</button>
+          <button id="btn-escuchar-frase" class="boton boton-secundario" type="button">Escuchar</button>
+          <button id="btn-copiar-frase" class="boton boton-secundario" type="button">Copiar</button>
+          <button id="btn-guardar-frase" class="boton boton-secundario" type="button">Guardar</button>
+          <button id="btn-ver-frases-guardadas" class="boton boton-secundario" type="button">Ver frases guardadas</button>
+          <button id="btn-cambiar-tema" class="boton boton-secundario" type="button" aria-pressed="false">
+            <span class="icono-tema" aria-hidden="true">◐</span>
+            <span>Modo oscuro</span>
+          </button>
+        </div>
+        <p id="estado-frase" class="nota-tarjeta" role="status" aria-live="polite">De la biblioteca de los grandes autores.</p>
+      </section>
+      <p class="detalle-final"><span aria-hidden="true">✳</span> LECTURAS QUE ACOMPAÑAN CADA MOMENTO</p>
+    </section>
+
+    <section id="biblioteca" class="seccion-catalogo panel-pestana" role="tabpanel" aria-labelledby="pestana-biblioteca" hidden>
+      <div class="encabezado-seccion">
+        <p class="sobretitulo"><span aria-hidden="true"></span> TU RINCÓN DE LECTURA</p>
+        <h2 id="titulo-biblioteca">Biblioteca</h2>
+        <p class="descripcion">Un espacio para descubrir y disfrutar tus lecturas favoritas.</p>
+      </div>
+      <label class="buscador-biblioteca" for="busqueda-libros">
+        <span>Buscar por título o autor</span>
+        <input id="busqueda-libros" type="search" placeholder="Escribí un título o autor…" autocomplete="off">
+      </label>
+      <p id="estado-biblioteca" class="estado-interaccion" role="status" aria-live="polite">Cargando catálogo…</p>
+      <div id="lista-libros" class="grilla-libros"></div>
+      <section id="lector-libro" class="lector-libro" aria-labelledby="titulo-libro" hidden>
+        <div class="lector-cabecera">
+          <div>
+            <h3 id="titulo-libro"></h3>
+            <p id="autor-libro" class="lector-autor"></p>
+          </div>
+          <button id="btn-volver-biblioteca" class="boton boton-secundario" type="button">Volver a la biblioteca</button>
+        </div>
+        <div id="controles-tipografia" class="controles-lector">
+          <div class="control-tamano-letra" role="group" aria-label="Tamaño de letra">
+            <span>Tamaño de letra</span>
+            <button id="btn-disminuir-letra" class="boton boton-secundario" type="button" aria-label="Disminuir tamaño de letra">A−</button>
+            <button id="btn-aumentar-letra" class="boton boton-secundario" type="button" aria-label="Aumentar tamaño de letra">A+</button>
+          </div>
+          <label class="control-interlineado" for="interlineado-libro">
+            <span>Espaciado entre líneas</span>
+            <input id="interlineado-libro" type="range" min="1.4" max="2.4" step="0.1" value="1.8">
+            <output id="valor-interlineado" for="interlineado-libro">1,8</output>
+          </label>
+        </div>
+        <p id="ayuda-lector" class="estado-interaccion" aria-live="polite"></p>
+        <h4 id="titulo-capitulo" class="titulo-capitulo" hidden></h4>
+        <article id="contenido-texto" class="contenido-texto" tabindex="0" hidden></article>
+        <div id="visor-epub" class="visor-epub" hidden></div>
+        <iframe id="visor-pdf" class="visor-pdf" title="Visor del libro PDF" hidden></iframe>
+      </section>
+    </section>
+
+    <div id="panel-menu" class="panel-pestana" role="tabpanel" aria-labelledby="pestana-menu" hidden>
+    <section id="menu-cafes" class="seccion-catalogo" aria-labelledby="titulo-menu">
+      <div class="encabezado-seccion">
+        <p class="sobretitulo"><span aria-hidden="true"></span> SABORES PARA CADA PÁGINA</p>
+        <h2 id="titulo-menu">Menú de la Cafetería</h2>
+        <p class="descripcion">Disfrutá un buen café y una lectura para acompañarlo.</p>
+      </div>
+      <div class="filtros-menu" role="group" aria-label="Filtrar productos del menú">
+        <button class="boton boton-filtro activo" type="button" data-filtro="Todos" aria-pressed="true">Todos</button>
+        <button class="boton boton-filtro" type="button" data-filtro="Cafés" aria-pressed="false">Cafés</button>
+        <button class="boton boton-filtro" type="button" data-filtro="Repostería" aria-pressed="false">Repostería</button>
+        <button class="boton boton-filtro" type="button" data-filtro="Maridajes Literarios" aria-pressed="false">Maridajes Literarios</button>
+      </div>
+      <p id="estado-menu" class="estado-interaccion" aria-live="polite"></p>
+      <div id="lista-menu" class="grilla-productos"></div>
+    </section>
+
+    <section id="menu-del-dia" class="seccion-catalogo" aria-labelledby="titulo-menu-dia">
+      <div class="encabezado-seccion">
+        <p class="sobretitulo"><span aria-hidden="true"></span> PREPARADO PARA HOY</p>
+        <h2 id="titulo-menu-dia">Menú del Día</h2>
+        <p class="descripcion">Platos y combos para acompañar tu momento de lectura.</p>
+      </div>
+      <div id="lista-menu-del-dia" class="grilla-productos"></div>
+    </section>
+
+    <section id="especial" class="seccion-catalogo seccion-especial" aria-labelledby="titulo-especial">
+      <div class="encabezado-seccion">
+        <p class="sobretitulo"><span aria-hidden="true"></span> UNA COMBINACIÓN PARA DISFRUTAR</p>
+        <h2 id="titulo-especial">Maridaje Literario del Día</h2>
+        <p class="descripcion">Una bebida y algo dulce para acompañar tu lectura.</p>
+      </div>
+      <article class="tarjeta-especial">
+        <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80" alt="Torta de chocolate junto a una taza de café" loading="lazy">
+        <div class="contenido-especial">
+          <p class="etiqueta-especial">EL COMBO DE HOY</p>
+          <h3 id="nombre-especial"></h3>
+          <p id="descripcion-especial"></p>
+          <p id="precio-especial" class="precio-producto"></p>
+          <button id="btn-ordenar-especial" class="boton boton-principal" type="button">Ordenar maridaje completo</button>
+        </div>
+      </article>
+    </section>
+    </div>
+
+    <section id="salon" class="seccion-catalogo panel-pestana" role="tabpanel" aria-labelledby="pestana-salon" hidden>
+      <div class="encabezado-seccion">
+        <p class="sobretitulo"><span aria-hidden="true"></span> ENCONTRÁ TU RINCÓN</p>
+        <h2 id="titulo-salon">Distribución de Mesas en Vivo</h2>
+        <p class="descripcion">Elegí una mesa libre para actualizar tu mesa seleccionada.</p>
+      </div>
+      <div id="lista-mesas" class="grilla-mesas"></div>
+
+      <section id="tu-mesa" class="panel-mesa" aria-labelledby="titulo-tu-mesa">
+        <div class="encabezado-seccion">
+          <p class="sobretitulo"><span aria-hidden="true"></span> PEDIDO LOCAL</p>
+          <h3 id="titulo-tu-mesa">Tu Mesa</h3>
+          <p id="indicador-mesa" class="indicador-mesa">Mesa 04 (Tu mesa)</p>
+        </div>
+        <p id="mesa-pedido-vacia" class="estado-interaccion">Todavía no agregaste productos a tu pedido.</p>
+        <div class="tabla-pedido-contenedor">
+          <table class="tabla-pedido">
+            <thead>
+              <tr><th scope="col">Producto</th><th scope="col">Precio</th><th scope="col">Cantidad</th><th scope="col">Subtotal</th><th scope="col"><span class="solo-lectores">Acciones</span></th></tr>
+            </thead>
+            <tbody id="productos-pedido"></tbody>
+          </table>
+        </div>
+        <div class="resumen-pedido">
+          <p>Subtotal: <strong id="subtotal-pedido">$0</strong></p>
+          <p>Total: <strong id="total-pedido">$0</strong></p>
+          <button id="btn-enviar-cocina" class="boton boton-principal" type="button">Enviar a cocina</button>
+          <button id="btn-pedir-cuenta" class="boton boton-principal" type="button">Pedir la cuenta</button>
+        </div>
+        <p id="estado-cuenta" class="estado-interaccion" role="status" aria-live="polite"></p>
+        <p class="aviso-demostracion">Este pedido es una demostración local: no se envía realmente a la cocina ni procesa pagos.</p>
+      </section>
+
+      <section class="formulario-reserva reserva-salon" aria-labelledby="titulo-reserva">
+        <div class="encabezado-formulario">
+          <h3 id="titulo-reserva">Solicitar una mesa para otra visita</h3>
+          <p>Completá tus datos para enviar una solicitud de reserva.</p>
+        </div>
+        <button id="btn-mostrar-reserva" class="boton boton-secundario" type="button" aria-expanded="false" aria-controls="formulario-reserva">
+          Pedir una mesa
+        </button>
+        <form id="formulario-reserva" hidden>
+          <div class="campos-formulario">
+            <label>Nombre<input name="nombre" type="text" autocomplete="name" required></label>
+            <label>Fecha<input name="fecha" type="date" required></label>
+            <label>Hora<input name="hora" type="time" required></label>
+            <label>Cantidad de personas<input name="personas" type="number" min="1" step="1" required></label>
+          </div>
+          <button class="boton boton-principal" type="submit">Enviar solicitud</button>
+          <p id="confirmacion-reserva" class="confirmacion-reserva" role="status" aria-live="polite"></p>
+        </form>
+        <p class="aviso-reserva">La solicitud es una demostración: no hay conexión con un sistema de reservas y no confirma una mesa.</p>
+      </section>
+    </section>
+
+  </main>
+
+  <footer class="pie">
+    <p>Un espacio para leer sin apuro <span aria-hidden="true">·</span> Café &amp; Letras</p>
+  </footer>
+</body>
+</html>
